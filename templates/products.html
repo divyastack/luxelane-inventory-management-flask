@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Products — {{ store_name }}{% endblock %}
+{% block page_title %}Products{% endblock %}
+
+{% block content %}
+
+{% set low = products | selectattr('quantity', 'lt', threshold) | list %}
+{% if low %}
+<div class="alert-banner">
+  <span style="font-size:1.1rem">⚠️</span>
+  <p><strong>{{ low|length }} product{{ 's' if low|length!=1 }}</strong> in this view have low stock.</p>
+</div>
+{% endif %}
+
+{# ── Toolbar ── #}
+<div class="toolbar">
+  <form method="GET" action="{{ url_for('products') }}" class="search-form">
+    <input type="text" name="search" class="form-control" placeholder="Search products…" value="{{ search }}">
+    <select name="category" class="form-control" style="max-width:180px">
+      <option value="">All Categories</option>
+      {% for cat in categories %}
+      <option value="{{ cat.id }}" {% if selected_cat|string == cat.id|string %}selected{% endif %}>
+        {{ cat.icon }} {{ cat.name }}
+      </option>
+      {% endfor %}
+    </select>
+    <button type="submit" class="btn btn-outline">Filter</button>
+    {% if search or selected_cat %}
+    <a href="{{ url_for('products') }}" class="btn btn-outline">Clear</a>
+    {% endif %}
+  </form>
+
+  <div style="display:flex;gap:8px">
+    <a href="{{ url_for('export_csv') }}" class="btn btn-outline">↓ Export CSV</a>
+    <a href="{{ url_for('add_product') }}" class="btn btn-primary">+ Add Product</a>
+  </div>
+</div>
+
+{# ── Products Table ── #}
+<div class="panel">
+  <div class="panel-header">
+    <span class="panel-title">👗 Product Catalogue</span>
+    <span style="font-size:.75rem;color:var(--muted)">
+      {{ products|length }} result{{ 's' if products|length!=1 }}
+      {% if search %} for "{{ search }}"{% endif %}
+    </span>
+  </div>
+
+  {% if products %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>SKU</th>
+          <th>Product</th>
+          <th>Category</th>
+          <th>Size</th>
+          <th>Color</th>
+          <th>Price</th>
+          <th>Stock</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in products %}
+        <tr>
+          <td style="font-size:.75rem;color:var(--muted);font-family:monospace">{{ p.sku or '—' }}</td>
+          <td><strong>{{ p.name }}</strong></td>
+          <td><span class="badge badge-cat">{{ p.icon }} {{ p.category_name }}</span></td>
+          <td style="font-size:.82rem;color:var(--muted)">{{ p.size or '—' }}</td>
+          <td style="font-size:.82rem;color:var(--muted)">{{ p.color or '—' }}</td>
+          <td class="price">₹{{ "%.2f"|format(p.price) }}</td>
+          <td class="qty">{{ p.quantity }}</td>
+          <td>
+            {% if p.quantity < threshold %}
+              <span class="badge badge-warn">⚠ Low</span>
+            {% else %}
+              <span class="badge badge-ok">✓ OK</span>
+            {% endif %}
+          </td>
+          <td>
+            <div style="display:flex;gap:6px">
+              <a href="{{ url_for('edit_product', pid=p.id) }}" class="btn btn-outline btn-sm">Edit</a>
+              <form method="POST" action="{{ url_for('delete_product', pid=p.id) }}"
+                    onsubmit="return confirm('Delete {{ p.name }}?')">
+                <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="panel-body" style="text-align:center;padding:48px;color:var(--muted)">
+    {% if search or selected_cat %}
+      No products found matching your filters.<br><br>
+      <a href="{{ url_for('products') }}" class="btn btn-outline">Clear Filters</a>
+    {% else %}
+      No products yet.<br><br>
+      <a href="{{ url_for('add_product') }}" class="btn btn-primary">+ Add your first product</a>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
