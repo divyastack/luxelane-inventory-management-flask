@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Categories — {{ store_name }}{% endblock %}
+{% block page_title %}Categories{% endblock %}
+{% block topbar_right %}
+  <a href="{{ url_for('add_category') }}" class="btn btn-primary btn-sm">+ Add Category</a>
+{% endblock %}
+
+{% macro cat_icon(icon) %}{% if icon=='dress' %}👗{% elif icon=='top' %}👚{% elif icon=='bottom' %}👖{% elif icon=='traditional' %}🥻{% elif icon=='winter' %}🧥{% elif icon=='accessory' %}👜{% elif icon=='footwear' %}👠{% elif icon=='gift' %}🎁{% else %}🏷️{% endif %}{% endmacro %}
+
+{% block content %}
+<div class="panel">
+  <div class="panel-header">
+    <span class="panel-title">🏷️ All Categories</span>
+    <span style="font-size:.75rem;color:var(--muted)">{{ categories|length }} categories</span>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Icon</th><th>Category Name</th><th>Description</th><th>Products</th><th>Total Stock</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        {% for cat in categories %}
+        <tr>
+          <td style="font-size:1.4rem">{{ cat_icon(cat.icon) }}</td>
+          <td><strong>{{ cat.name }}</strong></td>
+          <td style="color:var(--muted);font-size:.84rem">{{ cat.description or '—' }}</td>
+          <td>{{ cat.product_count }}</td>
+          <td>{{ cat.total_stock }}</td>
+          <td>
+            <div style="display:flex;gap:6px">
+              <a href="{{ url_for('products', category=cat.id) }}" class="btn btn-outline btn-sm">View</a>
+              <form method="POST" action="{{ url_for('delete_category', cat_id=cat.id) }}"
+                    onsubmit="return confirm('Delete category {{ cat.name }}?')">
+                <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

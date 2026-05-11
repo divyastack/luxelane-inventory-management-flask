@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — {{ store_name }}{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block topbar_right %}
+  <form method="POST" action="{{ url_for('send_alerts_now') }}">
+    <button class="btn btn-outline btn-sm" type="submit">📧 Send Alert</button>
+  </form>
+{% endblock %}
+
+{% macro cat_icon(icon) %}{% if icon=='dress' %}👗{% elif icon=='top' %}👚{% elif icon=='bottom' %}👖{% elif icon=='traditional' %}🥻{% elif icon=='winter' %}🧥{% elif icon=='accessory' %}👜{% elif icon=='footwear' %}👠{% elif icon=='gift' %}🎁{% else %}🏷️{% endif %}{% endmacro %}
+
+{% block content %}
+
+<div class="stats-grid">
+  <div class="stat-card">
+    <span class="stat-emoji">👗</span>
+    <div class="stat-label">Total Products</div>
+    <div class="stat-value">{{ total_products }}</div>
+  </div>
+  <div class="stat-card sage">
+    <span class="stat-emoji">📦</span>
+    <div class="stat-label">Total Stock</div>
+    <div class="stat-value">{{ total_stock }}</div>
+  </div>
+  <div class="stat-card rose">
+    <span class="stat-emoji">⚠️</span>
+    <div class="stat-label">Low Stock Items</div>
+    <div class="stat-value">{{ low_stock | length }}</div>
+  </div>
+  <div class="stat-card purple">
+    <span class="stat-emoji">🧾</span>
+    <div class="stat-label">Total Invoices</div>
+    <div class="stat-value">{{ total_bills }}</div>
+  </div>
+  <div class="stat-card">
+    <span class="stat-emoji">💰</span>
+    <div class="stat-label">Total Revenue</div>
+    <div class="stat-value" style="font-size:1.6rem">₹{{ "%.0f"|format(total_revenue) }}</div>
+  </div>
+</div>
+
+{% if low_stock %}
+<div class="alert-banner">
+  <span style="font-size:1.2rem">⚠️</span>
+  <p>
+    <strong>{{ low_stock|length }} product{{ 's' if low_stock|length != 1 }}</strong>
+    below {{ threshold }} units — need restocking.
+    <a href="{{ url_for('products') }}" style="color:var(--rose)">View products →</a>
+  </p>
+  <form method="POST" action="{{ url_for('send_alerts_now') }}" class="no-print">
+    <button class="btn btn-danger btn-sm" type="submit">📣 Email Alert</button>
+  </form>
+</div>
+{% endif %}
+
+{# Category Overview #}
+<div class="panel">
+  <div class="panel-header">
+    <span class="panel-title">🏷️ Categories Overview</span>
+    <a href="{{ url_for('category_list') }}" class="btn btn-outline btn-sm">Manage →</a>
+  </div>
+  <div class="panel-body">
+    <div class="category-grid">
+      {% for cat in categories %}
+      <a href="{{ url_for('products', category=cat.id) }}"
+         class="cat-card {% if cat.low_count > 0 %}has-low{% endif %}">
+        <span class="cat-icon">{{ cat_icon(cat.icon) }}</span>
+        <div class="cat-name">{{ cat.name }}</div>
+        <div class="cat-count">{{ cat.product_count }} products · {{ cat.total_stock }} units</div>
+        {% if cat.low_count > 0 %}
+        <div class="cat-low">⚠ {{ cat.low_count }} low stock</div>
+        {% endif %}
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+  <div class="panel">
+    <div class="panel-header">
+      <span class="panel-title">⚠️ Low Stock Items</span>
+    </div>
+    {% if low_stock %}
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Product</th><th>Category</th><th>Qty</th></tr></thead>
+        <tbody>
+          {% for p in low_stock %}
+          <tr>
+            <td>{{ p.name }}</td>
+            <td><span class="badge badge-cat">{{ cat_icon(p.icon) }} {{ p.category_name }}</span></td>
+            <td><span class="badge badge-warn">{{ p.quantity }}</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="panel-body" style="color:var(--muted);font-size:.86rem">✓ All stock levels are healthy.</div>
+    {% endif %}
+  </div>
+
+  <div class="panel">
+    <div class="panel-header">
+      <span class="panel-title">🧾 Recent Invoices</span>
+      <a href="{{ url_for('new_bill') }}" class="btn btn-primary btn-sm">+ New</a>
+    </div>
+    {% if recent_bills %}
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Invoice</th><th>Customer</th><th>Total</th></tr></thead>
+        <tbody>
+          {% for b in recent_bills %}
+          <tr>
+            <td><a href="{{ url_for('view_bill', bill_id=b.id) }}" style="font-size:.8rem">{{ b.invoice_number }}</a></td>
+            <td>{{ b.customer_name }}</td>
+            <td class="price">₹{{ "%.2f"|format(b.total) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="panel-body" style="color:var(--muted);font-size:.86rem">
+      No invoices yet. <a href="{{ url_for('new_bill') }}">Create one →</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

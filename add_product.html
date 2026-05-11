@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Add Product — {{ store_name }}{% endblock %}
+{% block page_title %}Add Product{% endblock %}
+
+{% block content %}
+<div style="max-width:700px">
+  <div class="panel">
+    <div class="panel-header">
+      <span class="panel-title">＋ New Product</span>
+    </div>
+    <div class="panel-body">
+      <form method="POST" action="{{ url_for('add_product') }}">
+
+        <div class="form-grid" style="margin-bottom:20px">
+          <div class="form-group form-full">
+            <label class="form-label">Product Name *</label>
+            <input type="text" name="name" class="form-control" placeholder="e.g. Floral Wrap Dress" required autofocus>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Category *</label>
+            <select name="category_id" class="form-control" required>
+              <option value="">Select category…</option>
+              {% for cat in categories %}
+              <option value="{{ cat.id }}">{{ cat.icon }} {{ cat.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">SKU / Product Code</label>
+            <input type="text" name="sku" class="form-control" placeholder="e.g. DR001">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Price (₹) *</label>
+            <input type="number" name="price" class="form-control" placeholder="0.00" min="0" step="0.01" value="0" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Stock Quantity *</label>
+            <input type="number" name="quantity" class="form-control" placeholder="0" min="0" value="0" required>
+            <span class="form-hint">⚠ Alert fires if below {{ threshold }} units</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Available Sizes</label>
+            <input type="text" name="size" class="form-control" placeholder="e.g. S, M, L, XL" value="Free Size">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Color</label>
+            <input type="text" name="color" class="form-control" placeholder="e.g. Red, Navy Blue">
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px">
+          <button type="submit" class="btn btn-primary">Save Product</button>
+          <a href="{{ url_for('products') }}" class="btn btn-outline">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
