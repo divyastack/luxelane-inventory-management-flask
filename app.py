@@ -17,9 +17,9 @@ app.secret_key = "fashion_store_secret_2024"
 # ─────────────────────────────────────────────
 #  CONFIGURATION
 # ─────────────────────────────────────────────
-GMAIL_ADDRESS       = "divyamuthukrishnan2808@gmail.com"    # ← your Gmail
-GMAIL_APP_PASS      = "hpfk imqq sdvo emhy"     # ← App Password
-ALERT_RECIPIENT     = "divyamuthukrishnan2808@gmail.com"    # ← alert recipient
+GMAIL_ADDRESS       = "yourgmail@gmail.com"    # ← your Gmail
+GMAIL_APP_PASS      = "xxxx xxxx xxxx"     # ← App Password
+ALERT_RECIPIENT     = "yourgmail8@gmail.com"    # ← alert recipient
 
 STORE_NAME          = "LuxeLane Fashion Store"
 STORE_ADDRESS       = "18,Roja Street, Lakshmi Nagar, Virudhunagar - 626001"
@@ -29,7 +29,7 @@ DEFAULT_GST_RATE    = 5.0                       # fashion items = 5% GST
 
 # UPI Payment Details — fill these in!
 UPI_ID              = "divya@upi"            # ← your UPI ID (e.g. divya@okaxis)
-UPI_PHONE           = "6381584343"              # ← your UPI linked phone number
+UPI_PHONE           = "987654321"              # ← your UPI linked phone number
 UPI_NAME            = "LuxeLane Fashion Store"     # ← name shown on UPI payment screen
 
 LOW_STOCK_THRESHOLD = 5
