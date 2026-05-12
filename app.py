@@ -23,7 +23,7 @@ ALERT_RECIPIENT     = "yourgmail8@gmail.com"    # ← alert recipient
 
 STORE_NAME          = "LuxeLane Fashion Store"
 STORE_ADDRESS       = "18,Roja Street, Lakshmi Nagar, Virudhunagar - 626001"
-STORE_PHONE         = "+91 6381584343"
+STORE_PHONE         = "+91 987654321"
 STORE_GST_NUMBER    = "33AAAAA0000A1Z5"         # ← your GST number
 DEFAULT_GST_RATE    = 5.0                       # fashion items = 5% GST
 
