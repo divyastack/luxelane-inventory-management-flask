@@ -19,7 +19,7 @@ app.secret_key = "fashion_store_secret_2024"
 # ─────────────────────────────────────────────
 GMAIL_ADDRESS       = "yourgmail@gmail.com"    # ← your Gmail
 GMAIL_APP_PASS      = "xxxx xxxx xxxx"     # ← App Password
-ALERT_RECIPIENT     = "yourgmail8@gmail.com"    # ← alert recipient
+ALERT_RECIPIENT     = "yourgmail@gmail.com"    # ← alert recipient
 
 STORE_NAME          = "LuxeLane Fashion Store"
 STORE_ADDRESS       = "18,Roja Street, Lakshmi Nagar, Virudhunagar - 626001"
